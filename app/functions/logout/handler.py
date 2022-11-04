@@ -15,7 +15,7 @@ def logout(event, context):
 
     if tokenData is None:
         return response({
-            'message': 'El token es invalido'
+            'message': 'Token invalido'
         }, 400)
 
     id = tokenData["id"]

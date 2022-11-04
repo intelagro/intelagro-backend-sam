@@ -2,7 +2,6 @@ import os
 import mysql.connector as mysql
 import json
 
-
 class Database:
     connection = mysql.connect(
         host = os.environ['DB_HOST'],
@@ -17,3 +16,32 @@ class Database:
         db_cursor.execute(query)
         result = json.dumps(db_cursor.fetchall(), default=str)
         return json.loads(result)
+
+    @staticmethod
+    def getUnidadesProductivas(license):
+        query = f'SELECT cat_holding_03_empresas_unidades_productivas.cat_holding_03_empresas_unidades_productivas_id, cat_holding_04_unidades_productivas_lotes.cat_holding_04_unidades_productivas_lotes_id, cat_holding_04_unidades_productivas_lotes.descripcion_lote AS lote, concat(cat_holding_03_empresas_unidades_productivas_categorias.descripcion_unidades_productivas_categorias, ": ", cat_holding_03_empresas_unidades_productivas.descripcion_unidades_productivas) AS descripcion FROM cat_holding_03_empresas_unidades_productivas LEFT OUTER JOIN cat_holding_03_empresas_unidades_productivas_categorias ON cat_holding_03_empresas_unidades_productivas.cat_holding_03_empresas_unidades_productivas_categorias_id = cat_holding_03_empresas_unidades_productivas_categorias.cat_holding_03_empresas_unidades_productivas_categorias_id LEFT OUTER JOIN cat_usuarios ON cat_holding_03_empresas_unidades_productivas.capturista = cat_usuarios.usuario LEFT OUTER JOIN cat_holding_04_unidades_productivas_lotes ON cat_holding_04_unidades_productivas_lotes.cat_holding_03_empresas_unidades_productivas_id = cat_holding_03_empresas_unidades_productivas.cat_holding_03_empresas_unidades_productivas_id WHERE (cat_usuarios_licencias_id = {license} AND cat_holding_03_empresas_unidades_productivas.vigente = 1);'
+        data = Database.query(query)
+
+        unidades_productivas = []
+        up_list = []
+
+        for element in data:
+            if not element['cat_holding_03_empresas_unidades_productivas_id'] in up_list:
+                unidades_productivas.append({
+                    'unidad_productiva_id': element['cat_holding_03_empresas_unidades_productivas_id'],
+                    'unidad_productiva_descripcion': element['descripcion'],
+                    'lotes': []
+                })
+                up_list.append(
+                    element['cat_holding_03_empresas_unidades_productivas_id'])
+
+            for unidad_productiva in unidades_productivas:
+                if unidad_productiva['unidad_productiva_id'] == element['cat_holding_03_empresas_unidades_productivas_id']:
+                    unidad_productiva['lotes'].append({
+                        'lote_id': element['cat_holding_04_unidades_productivas_lotes_id'],
+                        'lote_descripcion': element['lote']
+                    })
+                    break
+
+        return unidades_productivas
+    

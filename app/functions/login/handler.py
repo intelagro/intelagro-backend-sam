@@ -40,10 +40,15 @@ def login(event, context):
     Database.query(
         f'UPDATE cat_usuarios SET session_v2 = 1 WHERE cat_usuarios_id = {id}')
 
+    unidades_productivas = Database.getUnidadesProductivas(user['cat_usuarios_licencias_id'])
+
     return response(
         {
             'username': user['usuario'],
             'name': user['nombre'],
-            'token': token
+            'token': token,
+            'cats': {
+                'unidades_productivas': unidades_productivas
+            }
 
         }, 200)

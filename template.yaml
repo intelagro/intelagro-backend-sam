@@ -33,7 +33,7 @@ Resources:
           Type: Api
           Properties:
             Path: /login
-            Method: post
+            Method: POST
       Layers:
         - !Ref httpApiLayer
         - !Ref databaseLayer
@@ -51,7 +51,25 @@ Resources:
           Type: Api
           Properties:
             Path: /logout
-            Method: post
+            Method: POST
+      Layers:
+        - !Ref httpApiLayer
+        - !Ref databaseLayer
+        - !Ref authLayer
+  controlSueloPost:
+    Type: AWS::Serverless::Function    
+    Properties:
+      CodeUri: app/functions/control-suelo
+      Handler: handler.post
+      Runtime: python3.9
+      Architectures:
+        - arm64
+      Events:
+        controSueloPostEndpoint:
+          Type: Api
+          Properties:
+            Path: /control-suelo
+            Method: POST
       Layers:
         - !Ref httpApiLayer
         - !Ref databaseLayer
