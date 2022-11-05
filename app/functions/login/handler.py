@@ -31,7 +31,8 @@ def login(event, context):
 
     tokenData = {
         'id': user['cat_usuarios_id'],
-        'username': user['usuario']
+        'username': user['usuario'],
+        'capturista': user['capturista']
     }
 
     token = createToken(tokenData)
@@ -41,6 +42,7 @@ def login(event, context):
         f'UPDATE cat_usuarios SET session_v2 = 1 WHERE cat_usuarios_id = {id}')
 
     unidades_productivas = Database.getUnidadesProductivas(user['cat_usuarios_licencias_id'])
+    plagas = Database.getPlagas(user['cat_usuarios_licencias_id'])
 
     return response(
         {
@@ -48,7 +50,10 @@ def login(event, context):
             'name': user['nombre'],
             'token': token,
             'cats': {
-                'unidades_productivas': unidades_productivas
+                'unidades_productivas': unidades_productivas,
+                'control_suelo': {
+                    'plagas': plagas
+                }
             }
 
         }, 200)

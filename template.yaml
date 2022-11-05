@@ -56,10 +56,10 @@ Resources:
         - !Ref httpApiLayer
         - !Ref databaseLayer
         - !Ref authLayer
-  controlSueloPost:
+  controlSueloDrenajePost:
     Type: AWS::Serverless::Function    
     Properties:
-      CodeUri: app/functions/control-suelo
+      CodeUri: app/functions/controlSuelo/drenaje
       Handler: handler.post
       Runtime: python3.9
       Architectures:
@@ -68,7 +68,61 @@ Resources:
         controSueloPostEndpoint:
           Type: Api
           Properties:
-            Path: /control-suelo
+            Path: /control-suelo/drenaje
+            Method: POST
+      Layers:
+        - !Ref httpApiLayer
+        - !Ref databaseLayer
+        - !Ref authLayer
+  controlSueloPhCeNaPost:
+    Type: AWS::Serverless::Function    
+    Properties:
+      CodeUri: app/functions/controlSuelo/phCeNa
+      Handler: handler.post
+      Runtime: python3.9
+      Architectures:
+        - arm64
+      Events:
+        controSueloPostEndpoint:
+          Type: Api
+          Properties:
+            Path: /control-suelo/phcena
+            Method: POST
+      Layers:
+        - !Ref httpApiLayer
+        - !Ref databaseLayer
+        - !Ref authLayer
+  controlSueloPlagasPost:
+    Type: AWS::Serverless::Function    
+    Properties:
+      CodeUri: app/functions/controlSuelo/plagas
+      Handler: handler.post
+      Runtime: python3.9
+      Architectures:
+        - arm64
+      Events:
+        controSueloPostEndpoint:
+          Type: Api
+          Properties:
+            Path: /control-suelo/plagas
+            Method: POST
+      Layers:
+        - !Ref httpApiLayer
+        - !Ref databaseLayer
+        - !Ref authLayer
+  controlSueloRiegosPost:
+    Type: AWS::Serverless::Function    
+    Properties:
+      CodeUri: app/functions/controlSuelo/riegos
+      Handler: handler.post
+      Runtime: python3.9
+      Architectures:
+        - arm64
+      Events:
+        controSueloPostEndpoint:
+          Type: Api
+          Properties:
+            Path: /control-suelo/riegos
             Method: POST
       Layers:
         - !Ref httpApiLayer

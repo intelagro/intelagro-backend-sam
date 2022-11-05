@@ -13,15 +13,15 @@ def response(body: dict, status: int):
         "body": json.dumps(body)
     }
 
-def bodyValidator(body, params: list) -> any or None:
-    if type(body) is not str:
+def bodyValidator(event, params: list) -> any or None:
+    if type(event['body']) is not str:
         return response({
             'message': 'Faltan parametros en la peticion',
             'params': params
         }, 400)
     missingParams = []
 
-    data = json.loads(body)
+    data = json.loads(event['body'])
     for param in params:
         if not param in data:
             missingParams.append(param)

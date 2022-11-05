@@ -27,5 +27,5 @@ def readBearerToken(event):
     data = decodeToken(token)
     if data is None:
         return response({'message': "Token invalido"}, 401)
-
+    
     return data

@@ -5,7 +5,7 @@ from db import Database
 
 
 def logout(event, context):
-    missingParams = bodyValidator(event['body'], ['token'])
+    missingParams = bodyValidator(event, ['token'])
     if missingParams is not None:
         return missingParams
 
