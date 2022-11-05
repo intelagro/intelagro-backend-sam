@@ -1,13 +1,17 @@
-from httpApi import response, bodyValidator
+from httpApi import response, validateData
 import json
 from auth import decodeToken
 from db import Database
 
+params = {
+    'token': ['string']
+}
+
 
 def logout(event, context):
-    missingParams = bodyValidator(event, ['token'])
-    if missingParams is not None:
-        return missingParams
+    errors = validateData(event, ['token'])
+    if errors is not None:
+        return errors
 
     data = json.loads(event['body'])
 

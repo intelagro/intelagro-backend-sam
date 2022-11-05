@@ -1,13 +1,21 @@
-from httpApi import response, bodyValidator
+from cats import catPlagas, catUnidadesProductivas
+from httpApi import response, validateData
 import json
 from auth import createToken
 from db import Database
 
 
+params = {
+        'username': ['string'],
+        'password': ['string'],
+    }
+
+
+
 def login(event, context):
-    missingParams = bodyValidator(event['body'], ['username', 'password'])
-    if missingParams is not None:
-        return missingParams
+    errors = validateData(event, params)
+    if errors is not None:
+        return errors
 
     data = json.loads(event['body'])
     username = data['username']
@@ -41,8 +49,10 @@ def login(event, context):
     Database.query(
         f'UPDATE cat_usuarios SET session_v2 = 1 WHERE cat_usuarios_id = {id}')
 
-    unidades_productivas = Database.getUnidadesProductivas(user['cat_usuarios_licencias_id'])
-    plagas = Database.getPlagas(user['cat_usuarios_licencias_id'])
+    # CATALOGOS
+    unidades_productivas = catUnidadesProductivas(
+        user['cat_usuarios_licencias_id'])
+    plagas = catPlagas(user['cat_usuarios_licencias_id'])
 
     return response(
         {

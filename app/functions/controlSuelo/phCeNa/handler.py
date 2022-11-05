@@ -1,26 +1,43 @@
 import json
-from httpApi import bodyValidator, response
+from httpApi import response, validateData
 from auth import readBearerToken
+from db import Database
+
+params = {
+    'unidad_productiva_id': ['number'],
+    'lote_id': ['number'],
+    'surco': ['number'],
+    'maceta': ['number'],
+    'ph': ['number'],
+    'ce': ['number'],
+    'na': ['number'],
+    'fecha': ['date']
+}
 
 
 def post(event, context):
     tokenData = readBearerToken(event)
-    if 'message' in tokenData:
+    if not 'username' in tokenData:
         return tokenData
 
-    missingParams = bodyValidator(event, [
-        'unidad_productiva_id',
-        'lote_id',
-        'surco',
-        'maceta',
-        'ph',
-        'ce',
-        'na',
-        'fecha'
-    ])
-    if missingParams is not None:
-        return missingParams
+    errors = validateData(event, params)
+    if errors is not None:
+        return errors
 
     data = json.loads(event['body'])
 
-    return response({'user': data}, 200)
+    Database.insert(table='tr_control_de_suelo_phcena_app', data={
+        'cat_holding_03_empresas_unidades_productivas_id': data['unidad_productiva_id'],
+        'cat_holding_04_unidades_productivas_lotes_id': data['lote_id'],
+        'surco': data['surco'],
+        'maceta': data['maceta'],
+        'ph': data['ph'],
+        'ce': data['ce'],
+        'na': data['na'],
+        'fecha_de_captura': data['fecha'],
+        'capturista': tokenData['capturista']
+    })
+
+    return response({
+        'message': 'Se ha agregado el registro'
+    }, 200)

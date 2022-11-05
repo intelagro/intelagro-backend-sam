@@ -1,28 +1,30 @@
 import json
-from httpApi import bodyValidator, response
+from httpApi import response, validateData
 from auth import readBearerToken
+
+params = {
+    'unidad_productiva_id': ['number'],
+    'lote_id': ['number'],
+    'periodo_id': ['number'],
+    'ph_entrada': ['number'],
+    'ph_salida': ['number'],
+    'ce_entrada': ['number'],
+    'ce_salida': ['number'],
+    'agua_entrada': ['number'],
+    'agua_salida': ['number'],
+    'temperatura': ['number'],
+    'fecha': ['date']
+}
 
 
 def post(event, context):
     tokenData = readBearerToken(event)
-    if 'message' in tokenData:
+    if not 'username' in tokenData:
         return tokenData
 
-    missingParams = bodyValidator(event, [
-        'unidad_productiva_id',
-        'lote_id',
-        'periodo_id',
-        'ph_entrada',
-        'ph_salida',
-        'ce_entrada',
-        'ce_salida',
-        'agua_entrada',
-        'agua_salida',
-        'temperatura',
-        'fecha'
-    ])
-    if missingParams is not None:
-        return missingParams
+    errors = validateData(event, params)
+    if errors is not None:
+        return errors
 
     data = json.loads(event['body'])
 

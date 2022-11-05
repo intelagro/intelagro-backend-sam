@@ -1,8 +1,8 @@
-from dataclasses import replace
-import json
 import os
+import json
 from httpApi import response
 import jwt
+from db import Database
 
 SECRET = os.environ['JWT_SECRET']
 
@@ -27,5 +27,11 @@ def readBearerToken(event):
     data = decodeToken(token)
     if data is None:
         return response({'message': "Token invalido"}, 401)
-    
+
+    id = data['id']
+    user = Database.query(
+        f'SELECT session_v2 FROM cat_usuarios WHERE cat_usuarios_id = "{id}"')
+
+    if user[0]['session_v2'] == 0:
+        return response({'message': "Token invalido"}, 401)
     return data
