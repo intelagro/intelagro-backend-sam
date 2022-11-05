@@ -1,5 +1,5 @@
 import json
-from httpApi import bodyValidator, response
+from httpApi import response, validateData
 from auth import readBearerToken
 
 params = {
@@ -18,7 +18,7 @@ def post(event, context):
     if not 'username' in tokenData:
         return tokenData
 
-    errors = bodyValidator(event, params)
+    errors = validateData(event, params)
     if errors is not None:
         return errors
 

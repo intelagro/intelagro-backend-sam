@@ -9,7 +9,7 @@ params = {
 
 
 def logout(event, context):
-    errors = validateData(event, ['token'])
+    errors = validateData(event, params)
     if errors is not None:
         return errors
 
