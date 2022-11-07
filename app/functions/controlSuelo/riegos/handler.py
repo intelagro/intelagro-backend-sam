@@ -1,6 +1,7 @@
 import json
 from httpApi import response, validateData
 from auth import readBearerToken
+from db import Database
 
 params = {
     'unidad_productiva_id': ['number'],
@@ -24,4 +25,13 @@ def post(event, context):
 
     data = json.loads(event['body'])
 
-    return response({'user': data}, 200)
+    Database.insert(table = 'tr_control_de_plagas_app', data = {
+        'cat_holding_03_empresas_unidades_productivas_id': data['unidad_productiva_id'],
+        'cat_holding_04_unidades_productivas_lotes_id': data['lote_id'],
+        'fecha_de_captura': data['fecha'],
+        'capturista': tokenData['capturista']
+    })
+
+    return response({
+        'message': 'Se ha agregado el registro'
+    }, 200)

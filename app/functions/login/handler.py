@@ -31,7 +31,6 @@ def login(event, context):
 
     user = user[0]
 
-    print(user)
     if user['session_v2'] == 1 and user['tipo'] == 'usuario':
         return response({
             'message': 'Sesion iniciada en otro dispositivo'

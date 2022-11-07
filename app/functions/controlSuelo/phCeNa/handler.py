@@ -14,7 +14,6 @@ params = {
     'fecha': ['date']
 }
 
-
 def post(event, context):
     tokenData = readBearerToken(event)
     if not 'username' in tokenData:
